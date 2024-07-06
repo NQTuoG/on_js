@@ -1,4 +1,8 @@
+// import renderDuLieuGiay from "./util.js";
+import { duongDan as path } from "./util.js";
 // ôn tập hiển thị nội dung lên giao diện
+
+let duongDan = "Kiên nhóc";
 let arrMonAn = [
   {
     ten: "Mì xào",
@@ -31,20 +35,20 @@ for (let monAn of arrMonAn) {
   let { ten, soLuong, gia, trangThai } = monAn;
   if (trangThai) {
     content += `
-     <div class="col-3">
-          <!-- chứa tên món  -->
-          <h3>${ten}</h3>
-          <!-- chứa số lượng món  -->
-          <p>${soLuong}</p>
-          <!-- chứa giá tiền  -->
-          <p>${gia}</p>
-        </div>
-    `;
+   <div class="col-3">
+        <!-- chứa tên món  -->
+        <h3>${ten}</h3>
+        <!-- chứa số lượng món  -->
+        <p>${soLuong}</p>
+        <!-- chứa giá tiền  -->
+        <p>${gia}</p>
+      </div>
+  `;
   }
 }
-// document.getElementById("baiTap1").innerHTML = content;
+document.getElementById("baiTap1").innerHTML = content;
 
-// lấy dữ liệu từ back end
+// lấy dữ liệu từ BE
 function layDanhSachGiay() {
   let promise = axios({
     url: "https://shop.cyberlearn.vn/api/Product",
@@ -53,39 +57,44 @@ function layDanhSachGiay() {
 
   promise
     .then((res) => {
-      console.log(res.data.content);
-      renderDulieuGiay(res.data.content);
+      console.log(res);
+      // res.data.content
+      renderDuLieuGiay(res.data.content);
     })
     .catch((err) => {
       console.log(err);
     });
 }
-layDanhSachGiay();
-// render dữ liệu lên giao dịen
-function renderDulieuGiay(arrGiay, idTheCha = "baiTap2") {
+
+function duaNguoiDiToi(id) {
+  // window.location.href giúp chuyển hướng người dùng tới một trang web khác
+  // window.location.href = `https://cybersoft-crypto.vercel.app/detail.html?id=${id}`;
+  window.location.href = `http://127.0.0.1:5501/detail.html?id=${id}`;
+}
+
+duaNguoiDiToi(7);
+function renderDuLieuGiay(arrGiay, idTheCha = "baiTap2") {
   let content = "";
   for (let giay of arrGiay) {
-    let { image, name, shortDescription, price } = giay;
+    let { image, name, price, shortDescription, id } = giay;
     content += `
-        <div class="col-4">
-          <!-- hiển thị hình -->
-          <img
-            src="${image}"
-            class="w-100"
-            alt=""
-          />
+       <div class="col-4">
+          <!-- hiển thị hình  -->
+          <img src=${image} class="w-100" alt="">
           <!-- tên sản phẩm  -->
           <h4>${name}</h4>
-          <!-- mô tả ngắn -->
-          <p>
-          ${shortDescription}
-          </p>
-          <!-- sô tiền  -->
-          <p>${price}$</p>
-          <!-- nút chức năng  -->
-          <button class="btn btn-info">Mua Ngay</button>
+          <!-- mô tả ngắn  -->
+          <p>${shortDescription}</p>
+          <!-- số tiền  -->
+          <p>${price}</p>
+          <!-- nút chức năng mua ngay  -->
+          <button onclick="duaNguoiDiToi(${id})" class="btn btn-dark">Mua ngay</button>
         </div>
-    `;
+      `;
   }
   document.getElementById(idTheCha).innerHTML = content;
 }
+layDanhSachGiay();
+
+console.log(duongDan);
+console.log(path);
